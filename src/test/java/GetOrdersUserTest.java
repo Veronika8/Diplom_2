@@ -3,18 +3,19 @@ import api.client.UserClient;
 import api.model.Order;
 import api.model.User;
 import io.restassured.response.Response;
+import org.junit.After;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
 public class GetOrdersUserTest extends BaseTest {
-    String email = "test2312322@test.ru";
-    String password="1237343489232422";
-    String name="nametest";
+     CreateData createData = new CreateData();
 
     UserClient userClient = new UserClient();
     OrderClient orderClient=new OrderClient();
-    User user = new User(email,password,name);
+    User user = new User(createData.createEmail(),createData.createPassword(),createData.createName());
+
+    String accessToken;
 
     @Test
     public void checkGetOrdersUserWithAuth() {
@@ -22,7 +23,7 @@ public class GetOrdersUserTest extends BaseTest {
         response.then().assertThat().statusCode(200)
                 .body("success",equalTo(true));
 
-        String accessToken=response.then().extract().body().path("accessToken");
+        accessToken=response.then().extract().body().path("accessToken");
 
         Response response1=orderClient.sendGetRequestIngredients();
         String idIngredients = response1.then().extract().body().path("data[0]._id");
@@ -37,16 +38,19 @@ public class GetOrdersUserTest extends BaseTest {
         response3.then().assertThat().statusCode(200)
                 .body("success",equalTo(true))
                         .body("orders[0].number",equalTo(number));
-
-
-        userClient.sendDeleteRequestUser(accessToken.replace("Bearer ",""));
     }
 
     @Test
     public void checkGetOrdersUserWithoutAuth() {
+        accessToken="";
         Response response = orderClient.sendGetRequestOrdersUserWithoutAuth();
         response.then().assertThat().statusCode(401)
                 .body("success",equalTo(false))
                 .body("message",equalTo("You should be authorised"));
+    }
+
+    @After
+    public void deleteDate() {
+        userClient.sendDeleteRequestUser(accessToken.replace("Bearer ",""));
     }
 }

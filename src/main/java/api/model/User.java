@@ -2,6 +2,10 @@ package api.model;
 
 public class User {
 
+    public String getEmail() {
+        return email;
+    }
+
     private String email;
     private String password;
     private String name;

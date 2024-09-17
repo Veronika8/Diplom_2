@@ -1,20 +1,23 @@
 import api.client.UserClient;
 import api.model.User;
 import io.restassured.response.Response;
+import org.junit.After;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
 public class LoginUserTest extends BaseTest {
-
-    String email = "test234123123@test.ru";
-    String password="1237343489";
-    String name="nametest";
+    CreateData createData = new CreateData();
+    String email = createData.createEmail();
+    String password= createData.createPassword();
+    String name= createData.createName();
 
     UserClient userClient = new UserClient();
-    User user = new User(email,password,name);
+    User user = new User(email,password, name);
     User userWithoutName = new User(email,password);
-    User userWithInvalidPasswordAndEmail = new User(email+"123",password+"123");
+
+    User userWithInvalidPasswordAndEmail = new User(createData.createEmail(),createData.createPassword());
+    String accessToken;
 
     @Test
     public void checkLoginExistingUserTest() {
@@ -26,8 +29,7 @@ public class LoginUserTest extends BaseTest {
         response1.then().assertThat().statusCode(200)
                 .body("success",equalTo(true));
 
-        String accessToken=response1.then().extract().body().path("accessToken");
-        userClient.sendDeleteRequestUser(accessToken.replace("Bearer ",""));
+        accessToken=response1.then().extract().body().path("accessToken");
     }
 
     @Test
@@ -41,7 +43,11 @@ public class LoginUserTest extends BaseTest {
                 .body("success",equalTo(false))
                 .body("message",equalTo("email or password are incorrect"));
 
-        String accessToken=response.then().extract().body().path("accessToken");
+        accessToken=response.then().extract().body().path("accessToken");
+    }
+
+    @After
+    public void deleteDate() {
         userClient.sendDeleteRequestUser(accessToken.replace("Bearer ",""));
     }
 }
