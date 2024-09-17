@@ -14,7 +14,7 @@ public class RegisterUserTest extends BaseTest {
     User user = new User(createData.createEmail(),createData.createPassword(),createData.createName());
     User userWithoutName = new User(createData.createEmail(), createData.createPassword());
 
-    String accessToken;
+    String accessToken="";
 
     @Test
     public void checkRegisterUserTest() {
@@ -41,7 +41,6 @@ public class RegisterUserTest extends BaseTest {
 
     @Test
     public void checkSendRegisterRequestWithoutNameTest() {
-        accessToken="";
         Response response = userClient.sendPostRequestRegister(userWithoutName);
         response.then().assertThat().statusCode(403)
                 .body("success",equalTo(false))

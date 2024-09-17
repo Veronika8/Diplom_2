@@ -15,7 +15,7 @@ public class GetOrdersUserTest extends BaseTest {
     OrderClient orderClient=new OrderClient();
     User user = new User(createData.createEmail(),createData.createPassword(),createData.createName());
 
-    String accessToken;
+    String accessToken="";
 
     @Test
     public void checkGetOrdersUserWithAuth() {
@@ -42,7 +42,6 @@ public class GetOrdersUserTest extends BaseTest {
 
     @Test
     public void checkGetOrdersUserWithoutAuth() {
-        accessToken="";
         Response response = orderClient.sendGetRequestOrdersUserWithoutAuth();
         response.then().assertThat().statusCode(401)
                 .body("success",equalTo(false))

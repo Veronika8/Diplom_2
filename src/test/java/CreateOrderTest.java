@@ -16,7 +16,7 @@ public class CreateOrderTest extends BaseTest {
     OrderClient orderClient=new OrderClient();
     User user = new User(createData.createEmail(),createData.createPassword(),createData.createName());
 
-    String accessToken;
+    String accessToken="";
 
     @Test
     public void createOrderWithAuth() {
@@ -39,7 +39,6 @@ public class CreateOrderTest extends BaseTest {
 
     @Test
     public void createOrderWithoutAuth() {
-        accessToken="";
         Response response=orderClient.sendGetRequestIngredients();
         String idIngredients = response.then().extract().body().path("data[0]._id");
 
@@ -53,7 +52,6 @@ public class CreateOrderTest extends BaseTest {
 
     @Test
     public void createOrderWithoutInredients() {
-        accessToken="";
         Order order = new Order();
         Response response=orderClient.sendPostRequestCreateOrderWithoutAuth(order);
         response.then().assertThat().statusCode(400)
@@ -63,7 +61,6 @@ public class CreateOrderTest extends BaseTest {
 
     @Test
     public void creteOrderWithInvalidHash() {
-        accessToken="";
         Response response=orderClient.sendGetRequestIngredients();
         String idIngredients = response.then().extract().body().path("data[0]._id");
 
